@@ -35,8 +35,6 @@ jobs:
           if [ -f "assets/icon-foreground.png" ] && [ -f "assets/icon-background.png" ]; then
             echo "✅ Adaptive icon assets detected"
           
-            rm -rf android/app/src/main/res
-          
             npx capacitor-assets generate --android
             npx cap sync android
           
