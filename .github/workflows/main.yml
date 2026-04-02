@@ -30,19 +30,16 @@ jobs:
           npx cap init "Momentum" "com.harshitnimje.momentum" --web-dir www
           npx cap add android
           
-          # Force generate icons and overwrite existing ones
-          if [ -f "icon.png" ]; then
-            echo "✅ icon.png detected. Forcing icon replacement..."
-            npx capacitor-assets generate --android --assetPath icon.png
+          # UPDATE THE PATH HERE
+          if [ -f "assets/icon.png" ]; then
+            echo "✅ assets/icon.png detected. Forcing icon replacement..."
+            npx capacitor-assets generate --android --assetPath assets/icon.png
           else
-            echo "❌ ERROR: icon.png not found!"
+            echo "❌ ERROR: assets/icon.png not found!"
             exit 1
           fi
           
-          # Final sync to push icons into the Android project
           npx cap sync android
-          
-          # Clean and Build
           cd android && ./gradlew clean assembleDebug --no-daemon
 
       - name: Upload Result
@@ -50,13 +47,3 @@ jobs:
         with:
           name: Momentum-Build-v1
           path: android/app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: "latest-build"
-          name: "Latest Momentum Build"
-          body: "This is the latest automated build of your app."
-          files: android/app/build/outputs/apk/debug/app-debug.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
