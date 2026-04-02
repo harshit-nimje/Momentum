@@ -22,24 +22,28 @@ jobs:
       - name: Build Process
         run: |
           npm init -y
-          # 1. Install the tool that handles icons
           npm install @capacitor/cli@latest @capacitor/core@latest @capacitor/android@latest @capacitor/assets
           
+          # This line helps us debug: It lists all files in your repo
+          ls -R
+          
           mkdir -p www
-          if [ -f "index.html" ]; then mv index.html www/; fi
+          [ -f "index.html" ] && mv index.html www/
           
           npx cap init "Momentum" "com.harshitnimje.momentum" --web-dir www
           npx cap add android
           
-          # 2. Generate the icons (This creates the res/mipmap folders)
-          if [ -f "icon.png" ]; then
-            npx capacitor-assets generate --android
+          # Force generate icons from ANY file named icon.png in the repo
+          ICON_PATH=$(find . -name "icon.png" | head -n 1)
+          if [ -n "$ICON_PATH" ]; then
+            echo "Found icon at $ICON_PATH, forcing generation..."
+            npx capacitor-assets generate --android --icon "$ICON_PATH"
+          else
+            echo "ERROR: icon.png not found anywhere in the repository!"
+            exit 1 # This will turn the build RED so you know it failed to find the icon
           fi
           
-          # 3. CRITICAL: Sync and Copy again to lock in the new icons
           npx cap sync android
-          npx cap copy android
-          
           cd android && ./gradlew assembleDebug --no-daemon
 
       - name: Upload Result
