@@ -65,13 +65,22 @@
       -webkit-touch-callout: none;
     }
 
+    html {
+      overscroll-behavior: none;
+      overflow: hidden;
+      height: 100%;
+    }
+
     body {
       background: var(--paper);
       color: var(--ink);
       font-family: 'Lora', serif;
-      min-height: 100vh;
+      height: 100%;
+      overflow-y: auto;
       overflow-x: hidden;
       width: 100%;
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: auto;
       animation: bodyIn 0.2s ease both;
       transition: background 0.3s, color 0.3s;
     }
@@ -1052,11 +1061,16 @@
       border-radius: 2px;
       overflow: hidden;
     }
+    @keyframes dc-drain {
+      from { width: 100%; }
+      to   { width: 0%; }
+    }
     .delete-confirm-bar .dc-progress-fill {
       height: 100%;
       background: var(--accent);
       border-radius: 2px;
-      transition: width 1s linear;
+      width: 100%;
+      animation: dc-drain 3s linear forwards;
     }
     .dc-undo-btn {
       font-family: 'Bebas Neue', sans-serif;
@@ -2584,9 +2598,21 @@
       }
     }
 
-    /* ===== SCROLLBAR - hidden ===== */
+    /* ===== SCROLLBAR - fully hidden for WebView/Android ===== */
     ::-webkit-scrollbar {
-      display: none;
+      width: 0 !important;
+      height: 0 !important;
+      background: transparent !important;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: transparent !important;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent !important;
+    }
+    * {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
     }
 
     /* ===== ANIMATIONS ===== */
@@ -4058,40 +4084,33 @@
     }
 
     // ===== DELETE WITH COUNTDOWN =====
-    const _pendingDeletes = {}; // id → { timer, ticks }
+    const _pendingDeletes = {};
 
     function startDeleteCountdown(id, type) {
-      // If already pending, commit immediately
-      if (_pendingDeletes[id]) {
-        commitDelete(id, type);
-        return;
-      }
-      _pendingDeletes[id] = { ticks: 3 };
-      // Re-render so the confirm bar appears
+      if (_pendingDeletes[id]) { commitDelete(id, type); return; }
+
+      _pendingDeletes[id] = {};
       if (type === 'task') renderTasks();
       else if (type === 'habit') renderHabits();
 
+      // Number ticks: 3 → 2 → 1
       let ticks = 3;
-      const tick = () => {
+      const tickNum = () => {
         ticks--;
-        _pendingDeletes[id].ticks = ticks;
-        // Update progress bar & number in-place
-        const bar = document.querySelector(`.dc-progress-fill[data-id="${id}"]`);
         const num = document.querySelector(`.delete-countdown-num[data-id="${id}"]`);
-        if (bar) bar.style.width = (ticks / 3 * 100) + '%';
         if (num) num.textContent = ticks;
-        if (ticks <= 0) {
-          commitDelete(id, type);
-        } else {
-          _pendingDeletes[id].timer = setTimeout(tick, 1000);
-        }
+        if (ticks > 0) _pendingDeletes[id].tickTimer = setTimeout(tickNum, 1000);
       };
-      _pendingDeletes[id].timer = setTimeout(tick, 1000);
+      _pendingDeletes[id].tickTimer = setTimeout(tickNum, 1000);
+
+      // Final commit after exactly 3s
+      _pendingDeletes[id].timer = setTimeout(() => commitDelete(id, type), 3000);
     }
 
     function undoDelete(id, type) {
       if (_pendingDeletes[id]) {
         clearTimeout(_pendingDeletes[id].timer);
+        clearTimeout(_pendingDeletes[id].tickTimer);
         delete _pendingDeletes[id];
         if (type === 'task') renderTasks();
         else if (type === 'habit') renderHabits();
@@ -4101,6 +4120,7 @@
     function commitDelete(id, type) {
       if (_pendingDeletes[id]) {
         clearTimeout(_pendingDeletes[id].timer);
+        clearTimeout(_pendingDeletes[id].tickTimer);
         delete _pendingDeletes[id];
       }
       if (type === 'task') {
@@ -4117,21 +4137,15 @@
       }
     }
 
-    function deleteTask(id) {
-      startDeleteCountdown(id, 'task');
-    }
-
-    function deleteHabit(id) {
-      startDeleteCountdown(id, 'habit');
-    }
+    function deleteTask(id) { startDeleteCountdown(id, 'task'); }
+    function deleteHabit(id) { startDeleteCountdown(id, 'habit'); }
 
     function deleteConfirmBar(id, type) {
-      const ticks = _pendingDeletes[id] ? _pendingDeletes[id].ticks : 3;
       return `<div class="delete-confirm-bar">
-        <span class="delete-countdown-text">Deleting in <span class="delete-countdown-num" data-id="${id}">${ticks}</span>s…</span>
-        <div class="dc-progress"><div class="dc-progress-fill" data-id="${id}" style="width:${ticks/3*100}%"></div></div>
+        <span class="delete-countdown-text">Deleting in <span class="delete-countdown-num" data-id="${id}">3</span>s</span>
+        <div class="dc-progress"><div class="dc-progress-fill" data-id="${id}"></div></div>
         <button class="dc-undo-btn" onclick="undoDelete('${id}','${type}')">Undo</button>
-        <button class="dc-delete-btn" onclick="commitDelete('${id}','${type}')">Delete</button>
+        <button class="dc-delete-btn" onclick="commitDelete('${id}','${type}')">Delete now</button>
       </div>`;
     }
 
