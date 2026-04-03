@@ -1,5 +1,6 @@
 name: Build APK
-on: [push, workflow_dispatch]
+on: 
+  workflow_dispatch: # Only builds when you manually click 'Run'
 
 jobs:
   android-build:
@@ -25,22 +26,20 @@ jobs:
           npm install @capacitor/cli@latest @capacitor/core@latest @capacitor/android@latest @capacitor/assets
           
           mkdir -p www
-          [ -f "index.html" ] && mv index.html www/
+          [ -f "index.html" ] && cp index.html www/ # Copying instead of moving to avoid errors
           
           npx cap init "Momentum" "com.harshitnimje.momentum" --web-dir www
           npx cap add android
           
-          # UPDATE THE PATH HERE
-          # Ensure assets exist
+          # This line fixes your 'Uninstall' issue by bumping the version automatically
+          sed -i 's/versionCode 1/versionCode ${{ github.run_number }}/' android/app/build.gradle
+          sed -i 's/versionName "1.0"/versionName "1.0.${{ github.run_number }}"/' android/app/build.gradle
+          
           if [ -f "assets/icon-foreground.png" ] && [ -f "assets/icon-background.png" ]; then
             echo "✅ Adaptive icon assets detected"
-          
             npx capacitor-assets generate --android
-            npx cap sync android
-          
           else
-            echo "❌ ERROR: Required adaptive icon files missing!"
-            exit 1
+            echo "⚠️ Icons missing, using default"
           fi
           
           npx cap sync android
@@ -49,5 +48,5 @@ jobs:
       - name: Upload Result
         uses: actions/upload-artifact@v4
         with:
-          name: Momentum-Build-v1
+          name: Momentum-Build-B${{ github.run_number }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
