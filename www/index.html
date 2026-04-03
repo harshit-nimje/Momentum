@@ -5,9 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>MOMENTUM</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap"
-    rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"></noscript>
   <style>
     /* ===== THEME VARIABLES ===== */
     :root {
@@ -71,7 +72,7 @@
       min-height: 100vh;
       overflow-x: hidden;
       width: 100%;
-      animation: bodyIn 0.4s cubic-bezier(.4, 0, .2, 1) both;
+      animation: bodyIn 0.2s ease both;
       transition: background 0.3s, color 0.3s;
     }
 
@@ -303,17 +304,32 @@
 
     .section-title .pill {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6rem;
+      font-size: 0.65rem;
       background: var(--accent);
       color: white;
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-weight: 500;
-      min-width: 22px;
-      text-align: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
+      line-height: 1;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+    }
+
+    /* Text-label pills (e.g. "view", "read") stay pill-shaped */
+    .section-title .pill.pill-label {
+      width: auto;
+      height: auto;
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-weight: 500;
+      top: 0;
+      vertical-align: baseline;
     }
 
     .section-title .pill.green {
@@ -962,39 +978,37 @@
 
     .task-actions {
       display: flex;
-      gap: 0.3rem;
-      opacity: 0;
-      transition: opacity 0.15s;
+      gap: 0.35rem;
       flex-shrink: 0;
-    }
-
-    .task-card:hover .task-actions {
-      opacity: 1;
+      align-items: center;
     }
 
     .icon-btn {
-      width: 28px;
-      height: 28px;
-      border: none;
-      background: none;
+      width: 34px;
+      height: 34px;
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      transition: background 0.12s;
+      border-radius: 9px;
+      font-size: 0.92rem;
+      transition: background 0.12s, border-color 0.12s;
       color: var(--muted);
+      flex-shrink: 0;
     }
 
     .icon-btn:hover {
       background: var(--cream);
       color: var(--ink);
+      border-color: var(--warm-mid);
     }
 
     .icon-btn.del:hover {
       background: #fde8e8;
       color: var(--accent);
+      border-color: var(--accent);
     }
 
     .timer-task-tag {
@@ -1006,6 +1020,70 @@
       border-radius: 20px;
       border: 1px solid #f5c6c6;
     }
+
+    /* ===== DELETE COUNTDOWN ===== */
+    .delete-confirm-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.7rem;
+      background: #fde8e8;
+      border-radius: 10px;
+      margin-top: 0.45rem;
+      animation: slideIn 0.18s ease;
+    }
+    [data-theme="dark"] .delete-confirm-bar {
+      background: rgba(255, 107, 90, 0.15);
+    }
+    .delete-countdown-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      flex: 1;
+    }
+    .delete-countdown-num {
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+    .delete-confirm-bar .dc-progress {
+      flex: 1;
+      height: 3px;
+      background: rgba(192,57,43,0.15);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .delete-confirm-bar .dc-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 1s linear;
+    }
+    .dc-undo-btn {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      padding: 4px 12px;
+      border: 1.5px solid var(--accent);
+      border-radius: 20px;
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .dc-undo-btn:hover { background: var(--accent); color: white; }
+    .dc-delete-btn {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      padding: 4px 12px;
+      border: none;
+      border-radius: 20px;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .dc-delete-btn:hover { opacity: 0.85; }
 
     /* ===== TASK EDIT MODAL ===== */
     .task-edit-modal {
@@ -1254,9 +1332,10 @@
       background: var(--modal-bg);
       border-radius: 20px 20px 0 0;
       padding: 1.5rem 1.4rem;
+      padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px) + 64px);
       width: 100%;
       max-width: 600px;
-      max-height: 92vh;
+      max-height: 88vh;
       overflow-y: auto;
       transform: translateY(100%);
       transition: transform 0.32s cubic-bezier(.34, 1.12, .64, 1);
@@ -1392,7 +1471,7 @@
       font-family: 'Bebas Neue', sans-serif;
       font-size: 1.4rem;
       letter-spacing: 0.05em;
-      color: var(--gold);
+      color: var(--accent);
       text-transform: uppercase;
       line-height: 1;
     }
@@ -1438,7 +1517,7 @@
     .oh-level {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 0.9rem;
-      color: var(--gold);
+      color: var(--accent);
       letter-spacing: 0.1em;
       margin-bottom: 6px;
     }
@@ -1528,14 +1607,14 @@
       top: 70px;
       right: 1rem;
       z-index: 600;
-      background: var(--gold);
+      background: var(--accent);
       color: white;
       font-family: 'Bebas Neue', sans-serif;
       font-size: 1rem;
       letter-spacing: 0.1em;
       padding: 6px 14px;
       border-radius: 20px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
       opacity: 0;
       transform: translateY(-10px) scale(0.9);
       transition: all 0.3s cubic-bezier(.34, 1.56, .64, 1);
@@ -1927,7 +2006,7 @@
       flex-shrink: 0;
       position: relative;
       z-index: 2;
-      border: 1px solid rgba(0,0,0,0.06);
+      border: 1px solid rgba(0, 0, 0, 0.06);
     }
 
     .oh-avatar:hover,
@@ -2332,7 +2411,7 @@
       left: 50%;
       transform: translateX(-50%) translateY(80px);
       z-index: 700;
-      background: var(--toast-bg);
+      background: var(--ink);
       color: var(--paper);
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
@@ -2355,7 +2434,9 @@
     }
 
     [data-theme="dark"] #toast {
-      color: var(--ink);
+      background: #2a2825 !important;
+      color: #e8e4db !important;
+      border-left-color: var(--accent);
     }
 
     /* ===== CELEBRATION ===== */
@@ -2503,19 +2584,9 @@
       }
     }
 
-    /* ===== SCROLLBAR ===== */
+    /* ===== SCROLLBAR - hidden ===== */
     ::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 10px;
+      display: none;
     }
 
     /* ===== ANIMATIONS ===== */
@@ -2769,21 +2840,71 @@
       opacity: 1;
     }
 
-    .accent-opt-orange { background: #ff6b5a; }
-    .accent-opt-blue { background: #5eb5f7; }
-    .accent-opt-emerald { background: #52f28f; }
-    .accent-opt-amethyst { background: #c39df0; }
-    .accent-opt-amber { background: #f0c05a; }
-    .accent-opt-rose { background: #ff85b2; }
-    .accent-opt-monochrome { background: #958d80; }
+    .accent-opt-orange {
+      background: #ff6b5a;
+    }
 
-    [data-theme="light"] .accent-opt-orange { background: #c0392b; }
-    [data-theme="light"] .accent-opt-blue { background: #2980b9; }
-    [data-theme="light"] .accent-opt-emerald { background: #27ae60; }
-    [data-theme="light"] .accent-opt-amethyst { background: #8e44ad; }
-    [data-theme="light"] .accent-opt-amber { background: #b8963e; }
-    [data-theme="light"] .accent-opt-rose { background: #e91e63; }
-    [data-theme="light"] .accent-opt-monochrome { background: #0d0d0d; }
+    .accent-opt-blue {
+      background: #5eb5f7;
+    }
+
+    .accent-opt-emerald {
+      background: #52f28f;
+    }
+
+    .accent-opt-amethyst {
+      background: #c39df0;
+    }
+
+    .accent-opt-amber {
+      background: #f0c05a;
+    }
+
+    .accent-opt-rose {
+      background: #ff85b2;
+    }
+
+    .accent-opt-monochrome {
+      background: #f5f0e8;
+      border: 2px solid #958d80 !important;
+    }
+
+    .accent-opt-monochrome::after {
+      color: #0d0d0d !important;
+    }
+
+    [data-theme="light"] .accent-opt-orange {
+      background: #c0392b;
+    }
+
+    [data-theme="light"] .accent-opt-blue {
+      background: #2980b9;
+    }
+
+    [data-theme="light"] .accent-opt-emerald {
+      background: #27ae60;
+    }
+
+    [data-theme="light"] .accent-opt-amethyst {
+      background: #8e44ad;
+    }
+
+    [data-theme="light"] .accent-opt-amber {
+      background: #b8963e;
+    }
+
+    [data-theme="light"] .accent-opt-rose {
+      background: #e91e63;
+    }
+
+    [data-theme="light"] .accent-opt-monochrome {
+      background: #0d0d0d;
+      border: 2px solid transparent !important;
+    }
+
+    [data-theme="light"] .accent-opt-monochrome::after {
+      color: white !important;
+    }
 
     .dm-switch {
       position: relative;
@@ -2922,9 +3043,10 @@
           <div class="ov-desc">Best Streak</div>
         </div>
       </div>
-      <div class="quote-block">
+      <div class="quote-block" onclick="cycleQuote()" style="cursor:pointer;user-select:none;" title="Tap for a new quote">
         <div class="quote-text" id="quoteText"></div>
         <div class="quote-author" id="quoteAuthor"></div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--warm-mid);margin-top:6px;letter-spacing:0.06em;">TAP FOR NEW QUOTE</div>
       </div>
 
       <!-- Quick Capture on Overview -->
@@ -2981,6 +3103,9 @@
         <button class="filter-btn" onclick="setFilter('done',this)">Done</button>
         <button class="filter-btn" onclick="setFilter('today',this)">Due Today</button>
         <button class="filter-btn" onclick="setFilter('overdue',this)">Overdue</button>
+      </div>
+      <div id="todayCompletedChipWrap" style="display:none;margin-bottom:0.5rem">
+        <button class="filter-btn" id="todayCompletedChip" onclick="toggleTodayCompleted(this)" style="color:var(--success);border-color:var(--success)">Show Completed</button>
       </div>
 
       <!-- Category nav bar -->
@@ -3113,7 +3238,6 @@
         <button class="filter-btn" onclick="newNoteWithPrompt('💡 Got an idea? ')">💡 Got an idea?</button>
         <button class="filter-btn" onclick="newNoteWithPrompt('📋 Jot down plans… ')">📋 Jot plans</button>
         <button class="filter-btn" onclick="newNoteWithPrompt('🛒 Quick list: ')">🛒 Quick list</button>
-        <button class="filter-btn" onclick="newNoteWithPrompt('')">✏️ Blank note</button>
       </div>
       <div id="noteList" class="note-list"></div>
       <div class="note-editor" id="noteEditor">
@@ -3178,13 +3302,18 @@
         <div class="accent-row">
           <span class="acct-row-label">App Accent</span>
           <div class="accent-grid">
-            <div class="accent-opt accent-opt-orange" id="accent-orange" onclick="switchAccent('orange')" title="Orange (Default)"></div>
+            <div class="accent-opt accent-opt-orange" id="accent-orange" onclick="switchAccent('orange')"
+              title="Orange (Default)"></div>
             <div class="accent-opt accent-opt-blue" id="accent-blue" onclick="switchAccent('blue')" title="Blue"></div>
-            <div class="accent-opt accent-opt-emerald" id="accent-emerald" onclick="switchAccent('emerald')" title="Emerald"></div>
-            <div class="accent-opt accent-opt-amethyst" id="accent-amethyst" onclick="switchAccent('amethyst')" title="Amethyst"></div>
-            <div class="accent-opt accent-opt-amber" id="accent-amber" onclick="switchAccent('amber')" title="Amber"></div>
+            <div class="accent-opt accent-opt-emerald" id="accent-emerald" onclick="switchAccent('emerald')"
+              title="Emerald"></div>
+            <div class="accent-opt accent-opt-amethyst" id="accent-amethyst" onclick="switchAccent('amethyst')"
+              title="Amethyst"></div>
+            <div class="accent-opt accent-opt-amber" id="accent-amber" onclick="switchAccent('amber')" title="Amber">
+            </div>
             <div class="accent-opt accent-opt-rose" id="accent-rose" onclick="switchAccent('rose')" title="Rose"></div>
-            <div class="accent-opt accent-opt-monochrome" id="accent-monochrome" onclick="switchAccent('monochrome')" title="Monochrome"></div>
+            <div class="accent-opt accent-opt-monochrome" id="accent-monochrome" onclick="switchAccent('monochrome')"
+              title="Monochrome"></div>
           </div>
         </div>
       </div>
@@ -3221,44 +3350,49 @@
       <!-- Data / Backup -->
       <div class="account-section">
         <div class="acct-title">💾 Data & Backup</div>
-        <div class="sync-info-box" style="margin-bottom:0.9rem">
-          <div style="font-weight:600;color:var(--ink);margin-bottom:6px">How to back up (APK / WebView)</div>
-          <div class="sync-step">
-            <div class="sync-step-num">1</div>
-            <div>Tap <strong>Export JSON</strong> below — it copies your data as text.</div>
+
+        <!-- Auto-save status -->
+        <div style="display:flex;align-items:center;gap:8px;padding:0.6rem 0.8rem;background:var(--cream);border-radius:10px;margin-bottom:0.9rem;border:1px solid var(--border)">
+          <span style="font-size:1rem">🔒</span>
+          <div style="flex:1">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--ink);font-weight:600">AUTO-SAVED LOCALLY</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--muted);margin-top:2px" id="autoSaveStatus">All data stored in your browser</div>
           </div>
-          <div class="sync-step">
-            <div class="sync-step-num">2</div>
-            <div>Paste and save it in any notes app, email it to yourself, or keep it in Google Drive.</div>
-          </div>
-          <div class="sync-step">
-            <div class="sync-step-num">3</div>
-            <div>To restore: paste the JSON text into the <strong>Import</strong> field and tap Restore.</div>
-          </div>
-          <div style="margin-top:6px;opacity:0.7">Since the app runs as a WebView APK, standard file download dialogs
-            may not work — this copy-paste method works on all devices.</div>
+          <span style="font-size:0.7rem">✅</span>
         </div>
-        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.7rem">
-          <button class="btn btn-accent btn-sm" onclick="exportDataCopy()" style="border-radius:10px">📋 Copy
-            JSON</button>
-          <button class="btn btn-ghost btn-sm" onclick="showImportArea()" style="border-radius:10px">📥 Import /
-            Restore</button>
+
+        <!-- Export actions -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.8rem">
+          <button class="btn btn-accent btn-sm" onclick="exportDataCopy()" style="border-radius:10px;display:flex;align-items:center;justify-content:center;gap:5px;padding:0.65rem">
+            📋 Copy Backup
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="exportDataShare()" style="border-radius:10px;display:flex;align-items:center;justify-content:center;gap:5px;padding:0.65rem">
+            📤 Share / Save
+          </button>
         </div>
+        <button class="btn btn-ghost btn-sm" onclick="showImportArea()" style="border-radius:10px;width:100%;margin-bottom:0.5rem">
+          📥 Restore from Backup
+        </button>
+
         <div id="importArea" style="display:none;margin-top:0.6rem">
           <textarea class="inp" id="importTextarea" placeholder="Paste your backup JSON here…"
             style="width:100%;min-height:80px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;resize:vertical;border-radius:10px;line-height:1.5"></textarea>
           <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
-            <button class="btn btn-success btn-sm" onclick="importFromText()" style="border-radius:10px">✓
-              Restore</button>
+            <button class="btn btn-success btn-sm" onclick="importFromText()" style="border-radius:10px">✓ Restore</button>
             <button class="btn btn-ghost btn-sm" onclick="hideImportArea()" style="border-radius:10px">Cancel</button>
           </div>
+        </div>
+
+        <!-- Info note -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--muted);line-height:1.6;padding:0.5rem 0;border-top:1px solid var(--border);margin-top:0.4rem">
+          Your data lives in this device's localStorage. Use <strong style="color:var(--ink)">Copy Backup</strong> or <strong style="color:var(--ink)">Share</strong> to save a copy before clearing browser data or switching devices.
         </div>
       </div>
 
       <!-- Statistics -->
       <details>
         <summary>
-          <div class="section-title">Statistics <span class="pill gold">view</span></div>
+          <div class="section-title">Statistics <span class="pill pill-label gold">view</span></div>
         </summary>
         <div class="stats-layout" style="margin-bottom:1rem;">
           <div class="stats-hero-row stats-full">
@@ -3332,7 +3466,7 @@
 
       <details>
         <summary>
-          <div class="section-title">Productivity Tips <span class="pill">read</span></div>
+          <div class="section-title">Productivity Tips <span class="pill pill-label">read</span></div>
         </summary>
         <div class="tips-grid" id="tipsGrid" style="margin-bottom:1rem"></div>
       </details>
@@ -3613,7 +3747,7 @@
       const colors = ACCENTS[name][mode];
       document.documentElement.style.setProperty('--accent', colors.primary);
       document.documentElement.style.setProperty('--accent2', colors.secondary);
-      
+
       document.querySelectorAll('.accent-opt').forEach(opt => {
         opt.classList.toggle('active', opt.id === 'accent-' + name);
       });
@@ -3657,14 +3791,14 @@
         next = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
       }
       DB.userEmoji = next;
-      
+
       // Animate the click (subtle)
       el.style.transform = 'scale(0.92)';
       setTimeout(() => {
         el.style.transform = '';
         updateXPUI(); // This will sync all avatars
       }, 120);
-      
+
       // Add a little sparkle effect
       const rect = el.getBoundingClientRect();
       sparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -3672,6 +3806,7 @@
 
     let currentFilter = 'all';
     let currentCatFilter = 'All';
+    let showTodayCompleted = false;
     let editingHabitId = null;
     let editingTaskId = null;
     let editingTaskPriority = 'medium';
@@ -3689,8 +3824,25 @@
     let celebrationTimer = null;
     let toastTimer;
 
+    // ===== AUTO-CLEANUP COMPLETED TASKS FROM PREVIOUS DAYS =====
+    function cleanupCompletedTasks() {
+      const td = today();
+      const lastCleanup = localStorage.getItem('momentum_last_cleanup');
+      if (lastCleanup === td) return; // Already cleaned today
+      // Delete tasks completed on a previous day
+      const before = DB.tasks.length;
+      DB.tasks = DB.tasks.filter(t => !t.done || t.completedAt === td);
+      localStorage.setItem('momentum_last_cleanup', td);
+      const removed = before - DB.tasks.length;
+      if (removed > 0) {
+        // Small delay so toast shows after render
+        setTimeout(() => showToast(`🧹 ${removed} completed task${removed > 1 ? 's' : ''} cleared`), 600);
+      }
+    }
+
     // ===== INIT =====
     function init() {
+      cleanupCompletedTasks();
       applyDarkMode(DB.darkMode);
       applyAccent(DB.accent);
       renderDate();
@@ -3701,15 +3853,19 @@
       updateHeaderStats();
       updateXPUI();
       initTimer();
-      buildEmojiGrid();
-      buildColorGrid();
-      renderNotes();
-      renderTips();
-      renderCustomTimerChips();
-      updateTimerTaskSelect();
       injectQuickCapture();
-      updateAccountStats();
-      setTimeout(updateGliders, 100);
+      // Defer non-critical renders
+      const idle = window.requestIdleCallback || (cb => setTimeout(cb, 80));
+      idle(() => {
+        buildEmojiGrid();
+        buildColorGrid();
+        renderNotes();
+        renderTips();
+        renderCustomTimerChips();
+        updateTimerTaskSelect();
+        updateAccountStats();
+        setTimeout(updateGliders, 100);
+      });
     }
 
     function updateGliders() {
@@ -3734,10 +3890,28 @@
       // not displayed in header on mobile but keep for potential use
     }
 
+    let currentQuoteIndex = new Date().getDay() % QUOTES.length;
+
     function renderQuote() {
-      const q = QUOTES[new Date().getDay() % QUOTES.length];
-      document.getElementById('quoteText').textContent = '"' + q[0] + '"';
-      document.getElementById('quoteAuthor').textContent = '— ' + q[1];
+      const q = QUOTES[currentQuoteIndex];
+      const textEl = document.getElementById('quoteText');
+      const authEl = document.getElementById('quoteAuthor');
+      if (!textEl) return;
+      textEl.style.opacity = '0';
+      authEl.style.opacity = '0';
+      setTimeout(() => {
+        textEl.textContent = '"' + q[0] + '"';
+        authEl.textContent = '— ' + q[1];
+        textEl.style.transition = 'opacity 0.35s ease';
+        authEl.style.transition = 'opacity 0.35s ease';
+        textEl.style.opacity = '1';
+        authEl.style.opacity = '1';
+      }, 180);
+    }
+
+    function cycleQuote() {
+      currentQuoteIndex = (currentQuoteIndex + 1) % QUOTES.length;
+      renderQuote();
     }
 
     // ===== TABS =====
@@ -3759,7 +3933,7 @@
 
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       document.getElementById('view-' + id).classList.add('active');
-      if (id === 'account') { renderStats(); renderTips(); updateAccountStats(); }
+      if (id === 'account') { renderStats(); renderTips(); updateAccountStats(); updateAutoSaveStatus(); }
     }
 
     // ===== TOAST =====
@@ -3859,18 +4033,18 @@
       renderOverview();
       updateHeaderStats();
       updateTimerTaskSelect();
-      showToast('✓ Task added · +5 XP');
-      addXP(5);
+      showToast('✓ Task added');
     }
 
     function toggleTask(id, el) {
       const tasks = DB.tasks;
       const t = tasks.find(x => x.id === id);
       if (!t) return;
+      const wasDone = t.done;
       t.done = !t.done;
       t.completedAt = t.done ? today() : null;
       DB.tasks = tasks;
-      if (t.done) {
+      if (t.done && !wasDone) {
         const rect = el ? el.getBoundingClientRect() : null;
         celebrate(t.priority, rect);
         // Update account stat
@@ -3883,13 +4057,82 @@
       updateHeaderStats();
     }
 
+    // ===== DELETE WITH COUNTDOWN =====
+    const _pendingDeletes = {}; // id → { timer, ticks }
+
+    function startDeleteCountdown(id, type) {
+      // If already pending, commit immediately
+      if (_pendingDeletes[id]) {
+        commitDelete(id, type);
+        return;
+      }
+      _pendingDeletes[id] = { ticks: 3 };
+      // Re-render so the confirm bar appears
+      if (type === 'task') renderTasks();
+      else if (type === 'habit') renderHabits();
+
+      let ticks = 3;
+      const tick = () => {
+        ticks--;
+        _pendingDeletes[id].ticks = ticks;
+        // Update progress bar & number in-place
+        const bar = document.querySelector(`.dc-progress-fill[data-id="${id}"]`);
+        const num = document.querySelector(`.delete-countdown-num[data-id="${id}"]`);
+        if (bar) bar.style.width = (ticks / 3 * 100) + '%';
+        if (num) num.textContent = ticks;
+        if (ticks <= 0) {
+          commitDelete(id, type);
+        } else {
+          _pendingDeletes[id].timer = setTimeout(tick, 1000);
+        }
+      };
+      _pendingDeletes[id].timer = setTimeout(tick, 1000);
+    }
+
+    function undoDelete(id, type) {
+      if (_pendingDeletes[id]) {
+        clearTimeout(_pendingDeletes[id].timer);
+        delete _pendingDeletes[id];
+        if (type === 'task') renderTasks();
+        else if (type === 'habit') renderHabits();
+      }
+    }
+
+    function commitDelete(id, type) {
+      if (_pendingDeletes[id]) {
+        clearTimeout(_pendingDeletes[id].timer);
+        delete _pendingDeletes[id];
+      }
+      if (type === 'task') {
+        DB.tasks = DB.tasks.filter(t => t.id !== id);
+        renderTasks(); renderOverview(); updateHeaderStats(); updateTimerTaskSelect();
+        showToast('🗑 Task deleted');
+      } else if (type === 'habit') {
+        DB.habits = DB.habits.filter(h => h.id !== id);
+        const log = DB.log;
+        Object.keys(log).forEach(d => { if (log[d][id] !== undefined) delete log[d][id]; });
+        DB.log = log;
+        renderHabits(); renderOverview(); updateHeaderStats();
+        showToast('🗑 Habit deleted');
+      }
+    }
+
     function deleteTask(id) {
-      DB.tasks = DB.tasks.filter(t => t.id !== id);
-      renderTasks();
-      renderOverview();
-      updateHeaderStats();
-      updateTimerTaskSelect();
-      showToast('🗑 Task deleted');
+      startDeleteCountdown(id, 'task');
+    }
+
+    function deleteHabit(id) {
+      startDeleteCountdown(id, 'habit');
+    }
+
+    function deleteConfirmBar(id, type) {
+      const ticks = _pendingDeletes[id] ? _pendingDeletes[id].ticks : 3;
+      return `<div class="delete-confirm-bar">
+        <span class="delete-countdown-text">Deleting in <span class="delete-countdown-num" data-id="${id}">${ticks}</span>s…</span>
+        <div class="dc-progress"><div class="dc-progress-fill" data-id="${id}" style="width:${ticks/3*100}%"></div></div>
+        <button class="dc-undo-btn" onclick="undoDelete('${id}','${type}')">Undo</button>
+        <button class="dc-delete-btn" onclick="commitDelete('${id}','${type}')">Delete</button>
+      </div>`;
     }
 
     // ===== FULL TASK EDIT =====
@@ -3950,8 +4193,23 @@
     function setFilter(f, el) {
       currentFilter = f;
       currentCatFilter = 'All';
+      showTodayCompleted = false;
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
+      const chipWrap = document.getElementById('todayCompletedChipWrap');
+      const chip = document.getElementById('todayCompletedChip');
+      if (chipWrap) {
+        chipWrap.style.display = f === 'today' ? '' : 'none';
+        if (chip) { chip.textContent = 'Show Completed'; chip.style.background = 'transparent'; }
+      }
+      renderTasks();
+    }
+
+    function toggleTodayCompleted(el) {
+      showTodayCompleted = !showTodayCompleted;
+      el.textContent = showTodayCompleted ? 'Hide Completed' : 'Show Completed';
+      el.style.background = showTodayCompleted ? 'var(--success)' : 'transparent';
+      el.style.color = showTodayCompleted ? 'white' : 'var(--success)';
       renderTasks();
     }
 
@@ -3964,7 +4222,7 @@
         if (currentCatFilter !== 'All' && t.category !== currentCatFilter) return false;
         if (currentFilter === 'active') return !t.done;
         if (currentFilter === 'done') return t.done;
-        if (currentFilter === 'today') return t.due === td;
+        if (currentFilter === 'today') return t.due === td && (!t.done || showTodayCompleted);
         if (currentFilter === 'overdue') return !t.done && t.due && t.due < td;
         return true;
       });
@@ -4035,8 +4293,10 @@
       }
       const notesHtml = t.notes ? `<span class="task-notes-preview" title="${escHtml(t.notes)}">📌 ${escHtml(t.notes.substring(0, 40))}${t.notes.length > 40 ? '…' : ''}</span>` : '';
       const linkedTimer = timerLinkedTaskId === t.id ? `<span class="timer-task-tag">⏱ Focused</span>` : '';
+      const isPending = !!_pendingDeletes[t.id];
+      const confirmBar = isPending ? deleteConfirmBar(t.id, 'task') : '';
       return `
-  <div class="task-card ${t.done ? 'done' : ''}" data-priority="${t.priority}" data-task-id="${t.id}">
+  <div class="task-card ${t.done ? 'done' : ''} ${isPending ? 'deleting' : ''}" data-priority="${t.priority}" data-task-id="${t.id}" style="${isPending ? 'opacity:0.6;' : ''}">
     <div class="task-check ${t.done ? 'checked' : ''}" onclick="toggleTask('${t.id}',this)"></div>
     <div class="task-body">
       <div class="task-title">${escHtml(t.title)}</div>
@@ -4045,8 +4305,9 @@
         <span class="tag tag-cat">${escHtml(t.category || 'General')}</span>
         ${dueLabel}${linkedTimer}${notesHtml}
       </div>
+      ${confirmBar}
     </div>
-    <div class="task-actions">
+    <div class="task-actions" ${isPending ? 'style="display:none"' : ''}>
       <button class="icon-btn" title="Link Timer" onclick="linkTaskToTimer('${t.id}')">⏱</button>
       <button class="icon-btn" title="Edit" onclick="editTask('${t.id}')">✏️</button>
       <button class="icon-btn del" title="Delete" onclick="deleteTask('${t.id}')">🗑️</button>
@@ -4256,15 +4517,6 @@
       showToast(editingHabitId ? '✓ Habit updated' : '✓ Habit created · +10 XP');
     }
 
-    function deleteHabit(id) {
-      DB.habits = DB.habits.filter(h => h.id !== id);
-      const log = DB.log;
-      Object.keys(log).forEach(d => { if (log[d][id] !== undefined) delete log[d][id]; });
-      DB.log = log;
-      renderHabits(); renderOverview(); updateHeaderStats();
-      showToast('🗑 Habit deleted');
-    }
-
     function toggleHabitInstance(hid, instance, el) {
       const log = DB.log;
       const key = todayKey();
@@ -4285,9 +4537,8 @@
         const rect = el ? el.getBoundingClientRect() : null;
         celebrate('habit', rect, getStreak(hid));
         updateAccountStats();
-      } else if (newCount > current) {
+      } else if (!isComplete && newCount > current) {
         showToast(`+1 · ${newCount}/${target}`);
-        addXP(5);
       }
     }
 
@@ -4388,8 +4639,11 @@
 
         const checkBtn = target === 1 ? `<button class="habit-check-btn ${doneToday ? 'done-today' : 'not-done'}" onclick="toggleHabitInstance('${h.id}',1,this)">${doneToday ? '✓ Done' : 'Mark Done'}</button>` : '';
 
+        const isPendingHabit = !!_pendingDeletes[h.id];
+        const habitConfirmBar = isPendingHabit ? deleteConfirmBar(h.id, 'habit') : '';
+
         return `
-    <div class="habit-card" style="--hc:${h.color}">
+    <div class="habit-card" style="--hc:${h.color};${isPendingHabit ? 'opacity:0.6;' : ''}">
       <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:${h.color};border-radius:14px 0 0 14px"></div>
       <div class="habit-top">
         <div class="habit-icon" style="background:${h.color}22">${h.icon}</div>
@@ -4401,16 +4655,17 @@
           <div class="habit-streak">${streak}</div>
           <div class="habit-streak-lbl">day streak</div>
         </div>
-        <div style="display:flex;gap:3px;margin-left:6px">
+        <div style="display:flex;gap:3px;margin-left:6px" ${isPendingHabit ? 'style="display:none"' : ''}>
           <button class="icon-btn" onclick="openHabitModal('${h.id}')">✏️</button>
           <button class="icon-btn del" onclick="deleteHabit('${h.id}')">🗑️</button>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <div class="week-dots">${weekDots}</div>
-        ${checkBtn}
+        ${isPendingHabit ? '' : checkBtn}
       </div>
-      ${progressHtml}
+      ${isPendingHabit ? '' : progressHtml}
+      ${habitConfirmBar}
     </div>`;
       }).join('');
     }
@@ -4629,8 +4884,7 @@
       document.getElementById('qcTaskInput').value = '';
       document.getElementById('qcTaskInput').style.height = 'auto';
       renderTasks(); renderOverview(); updateHeaderStats(); updateTimerTaskSelect();
-      showToast('✓ Task added · +5 XP');
-      addXP(5);
+      showToast('✓ Task added');
     }
 
     function qcOpenHabit() {
@@ -4646,7 +4900,7 @@
     function qcAddNote() {
       const val = document.getElementById('qcNoteInput').value.trim();
       if (!val) return;
-      const note = { id: Date.now().toString(), title: val.split('\n')[0].substring(0, 60), content: val, created: today(), updated: today() };
+      const note = { id: Date.now().toString(), title: '', content: val, created: today(), updated: today() };
       const notes = DB.notes; notes.unshift(note); DB.notes = notes;
       document.getElementById('qcNoteInput').value = '';
       renderNotes();
@@ -4690,9 +4944,8 @@
       if (document.getElementById('acct-habits-done')) document.getElementById('acct-habits-done').textContent = habitsDone;
     }
 
-    // ===== DATA EXPORT/IMPORT =====
-    function exportDataCopy() {
-      const data = {
+    function getExportData() {
+      return {
         user: DB.userName,
         exported: new Date().toISOString(),
         tasks: DB.tasks,
@@ -4703,17 +4956,66 @@
         customTimers: DB.customTimers,
         xp: DB.xp,
       };
-      const json = JSON.stringify(data, null, 2);
-      // Try clipboard API first
+    }
+
+    function exportDataCopy() {
+      const json = JSON.stringify(getExportData(), null, 2);
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(json).then(() => {
-          showToast('📋 Copied to clipboard!');
-        }).catch(() => {
-          // fallback: show in textarea
-          showExportText(json);
-        });
+          showToast('📋 Backup copied to clipboard!');
+          updateAutoSaveStatus();
+        }).catch(() => showExportText(json));
       } else {
         showExportText(json);
+      }
+    }
+
+    function exportDataShare() {
+      const json = JSON.stringify(getExportData(), null, 2);
+      const filename = 'momentum-backup-' + today() + '.json';
+      // Try Web Share API with file first
+      if (navigator.share && navigator.canShare) {
+        try {
+          const file = new File([json], filename, { type: 'application/json' });
+          if (navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file], title: 'Momentum Backup', text: 'My Momentum data backup' });
+            return;
+          }
+        } catch (e) {}
+      }
+      // Fallback: share as text URL or download
+      if (navigator.share) {
+        navigator.share({ title: 'Momentum Backup', text: json }).catch(() => downloadJson(json, filename));
+        return;
+      }
+      downloadJson(json, filename);
+    }
+
+    function downloadJson(json, filename) {
+      try {
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('💾 Backup downloaded!');
+      } catch (e) {
+        showExportText(json);
+      }
+    }
+
+    function updateAutoSaveStatus() {
+      const el = document.getElementById('autoSaveStatus');
+      if (!el) return;
+      try {
+        const keys = ['mm_tasks','mm_habits','mm_log','mm_notes','mm_streak','mm_timers','mm_focus'];
+        let bytes = keys.reduce((acc, k) => acc + (localStorage.getItem(k) || '').length * 2, 0);
+        const kb = (bytes / 1024).toFixed(1);
+        el.textContent = `${DB.tasks.length} tasks · ${DB.habits.length} habits · ${DB.notes.length} notes · ${kb} KB stored`;
+      } catch(e) {
+        el.textContent = 'All data stored in your browser';
       }
     }
 
